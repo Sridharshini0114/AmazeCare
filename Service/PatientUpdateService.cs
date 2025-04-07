@@ -1,4 +1,5 @@
-﻿using AmazeCare.Interfaces;
+﻿using AmazeCare.Exceptions;
+using AmazeCare.Interfaces;
 using AmazeCare.Models;
 using AmazeCare.Models.DTOs;
 
@@ -27,27 +28,27 @@ namespace AmazeCare.Business
 
             var user = await _userRepository.GetUserById(dto.UserId);
             if (user == null)
-                throw new Exception("User not found.");
+                throw new PatientNotFoundException();
 
             var patient = await _patientRepository.GetByUserId(dto.UserId);
             if (patient == null)
-                throw new Exception("Patient not found.");
+                throw new PatientNotFoundException();
 
             // Validate existing fields before updating
             if (user.ContactNo == null)
-                throw new Exception("ContactNo is null in the database.");
+                throw new MissingUserFieldException("ContactNo is null in the database.");
 
             if (user.FullName == null)
-                throw new Exception("FullName is null in the database.");
+                throw new MissingUserFieldException("FullName is null in the database.");
 
             if (user.Gender == null)
-                throw new Exception("Gender is null in the database.");
+                throw new MissingUserFieldException("Gender is null in the database.");
 
             if (user.DateOfBirth == default)
-                throw new Exception("DateOfBirth is not set in the database.");
+                throw new MissingUserFieldException("DateOfBirth is not set in the database.");
 
             if (patient.MedicalHistory == null)
-                throw new Exception("MedicalHistory is null in the database.");
+                throw new MissingPatientFieldException("MedicalHistory is null in the database.");
 
             // Only update if new values are provided
             if (dto.FullNameUpdate != null && !string.IsNullOrEmpty(dto.FullNameUpdate.NewFullName))

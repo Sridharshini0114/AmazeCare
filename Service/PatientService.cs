@@ -1,4 +1,5 @@
-﻿using AmazeCare.Interfaces;
+﻿using AmazeCare.Exceptions;
+using AmazeCare.Interfaces;
 using AmazeCare.Misc;
 using AmazeCare.Models;
 using AmazeCare.Models.DTOs;
@@ -19,8 +20,7 @@ namespace AmazeCare.Business
         public PatientService(
             IUserRepository userRepository, // Inject interface here
             IPatientRepository patientRepository,
-            TokenService tokenService,
-            IDGeneratorService idGenerator)
+            TokenService tokenService)
         {
             _userRepository = userRepository;
             _patientRepository = patientRepository;
@@ -35,11 +35,11 @@ namespace AmazeCare.Business
         {
             var existingUser = await _userRepository.GetUserByEmail(dto.Email);
             if (existingUser != null)
-                throw new Exception("Email already exists");
+                throw new EmailAlreadyExistsException("Email already exists");
 
             var role = await _userRepository.GetRoleByName("patient");
             if (role == null)
-                throw new Exception("Role 'patient' not found");
+                throw new RoleNotFoundException("Role 'patient' not found");
 
           
 
@@ -101,7 +101,7 @@ namespace AmazeCare.Business
         {
             var user = await _userRepository.GetUserByEmailAndPassword(dto.Email, dto.Password);
             if (user == null)
-                throw new Exception("Invalid email or password");
+                throw new EmailAlreadyExistsException("Invalid email or password");
 
             var token = _tokenService.GenerateToken(user, user.Role!.RoleName);
 
@@ -129,7 +129,7 @@ namespace AmazeCare.Business
             var filtered = ApplyFilters(patients.ToList(), filters, sortBy);
 
             if (!filtered.Any())
-                throw new Exception("No patients found");
+                throw new PatientNotFoundException();
 
             return filtered;
         }
@@ -208,7 +208,7 @@ namespace AmazeCare.Business
             }
 
             if (!result.Any())
-                throw new Exception("No patients found matching the criteria.");
+                throw new PatientNotFoundException();
 
             return result;
         }
