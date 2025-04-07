@@ -54,9 +54,9 @@ namespace AmazeCare.Repositories
         }
 
         public async Task<IEnumerable<Patient>> GetAllWithUserDetails()
-{
-    return await _context.Patients.Include(p => p.User).ToListAsync();
-}
+        {
+            return await _context.Patients.Include(p => p.User).ToListAsync();
+        }
 
 
     }

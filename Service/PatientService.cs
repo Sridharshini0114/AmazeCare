@@ -14,7 +14,7 @@ namespace AmazeCare.Business
         private readonly IUserRepository _userRepository; // Interface instead of class
         private readonly IPatientRepository _patientRepository;
         private readonly TokenService _tokenService;
-        private readonly IDGeneratorService _idGenerator;
+   
 
         public PatientService(
             IUserRepository userRepository, // Inject interface here
@@ -25,7 +25,7 @@ namespace AmazeCare.Business
             _userRepository = userRepository;
             _patientRepository = patientRepository;
             _tokenService = tokenService;
-            _idGenerator = idGenerator;
+           
         }
 
 
@@ -41,7 +41,7 @@ namespace AmazeCare.Business
             if (role == null)
                 throw new Exception("Role 'patient' not found");
 
-            var generatedUserId = await _idGenerator.GenerateIDAsync('U');
+          
 
             var user = new User
             {
@@ -60,7 +60,7 @@ namespace AmazeCare.Business
 
             if (dto.RoleName.ToLower() == "patient")
             {
-                var generatedPatientId = await _idGenerator.GenerateIDAsync('P');
+          
                 var patient = new Patient
                 {
                     UserId = user.UserId,
