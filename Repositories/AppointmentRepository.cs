@@ -39,5 +39,43 @@ namespace AmazeCare.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<IEnumerable<Appointment>> GetAppointmentsByDoctorIdAsync(int doctorId)
+        {
+            return await _context.Appointments
+                .Include(a => a.Doctor).ThenInclude(d => d.User)
+                .Include(a => a.Patient).ThenInclude(p => p.User)
+                .Where(a => a.DoctorId == doctorId)
+                .ToListAsync();
+        }
+
+        //  NEW: Get appointment by ID
+        public async Task<Appointment?> GetAppointmentByIdAsync(int appointmentId)
+        {
+            return await _context.Appointments
+                .Include(a => a.Doctor).ThenInclude(d => d.User)
+                .Include(a => a.Patient).ThenInclude(p => p.User)
+                .FirstOrDefaultAsync(a => a.AppointmentId == appointmentId);
+        }
+
+        // NEW: Update appointment
+        public async Task<Appointment?> UpdateAppointmentAsync(Appointment updatedAppointment)
+        {
+            var existingAppointment = await _context.Appointments.FindAsync(updatedAppointment.AppointmentId);
+
+            if (existingAppointment == null)
+                return null;
+
+            existingAppointment.PatientId = updatedAppointment.PatientId;
+            existingAppointment.DoctorId = updatedAppointment.DoctorId;
+            existingAppointment.AppointmentDate = updatedAppointment.AppointmentDate;
+            existingAppointment.Symptoms = updatedAppointment.Symptoms;
+            existingAppointment.Status = updatedAppointment.Status;
+
+            await _context.SaveChangesAsync();
+
+            return existingAppointment;
+        }
+
     }
 }

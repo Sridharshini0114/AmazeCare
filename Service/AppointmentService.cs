@@ -36,5 +36,31 @@ namespace AmazeCare.Services
         {
             return await _repository.DeleteAppointmentAsync(appointmentId);
         }
+
+        public async Task<IEnumerable<Appointment>> GetAppointmentsByDoctorIdAsync(int doctorId)
+        {
+            return await _repository.GetAppointmentsByDoctorIdAsync(doctorId);
+        }
+
+        public async Task<Appointment?> GetAppointmentByIdAsync(int appointmentId)
+        {
+            return await _repository.GetAppointmentByIdAsync(appointmentId);
+        }
+
+        public async Task<Appointment?> UpdateAppointmentAsync(AppointmentDto dto)
+        {
+            var appointment = new Appointment
+            {
+                AppointmentId = dto.AppointmentId, // ✅ Ensure AppointmentDto includes this
+                PatientId = dto.PatientId,
+                DoctorId = dto.DoctorId,
+                AppointmentDate = dto.AppointmentDate,
+                Symptoms = dto.Symptoms,
+                Status = dto.Status
+            };
+
+            return await _repository.UpdateAppointmentAsync(appointment);
+        }
+
     }
 }

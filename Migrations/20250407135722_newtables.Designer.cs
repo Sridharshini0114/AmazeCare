@@ -4,6 +4,7 @@ using AmazeCare.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AmazeCare.Migrations
 {
     [DbContext(typeof(AmazecareContext))]
-    partial class AmazecareContextModelSnapshot : ModelSnapshot
+    [Migration("20250407135722_newtables")]
+    partial class newtables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -149,26 +151,6 @@ namespace AmazeCare.Migrations
                     b.ToTable("MedicalRecords");
                 });
 
-            modelBuilder.Entity("AmazeCare.Models.MedicalTest", b =>
-                {
-                    b.Property<int>("MedicalTestId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MedicalTestId"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TestName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("MedicalTestId");
-
-                    b.ToTable("MedicalTests");
-                });
-
             modelBuilder.Entity("AmazeCare.Models.Medicine", b =>
                 {
                     b.Property<int>("MedicineId")
@@ -279,9 +261,6 @@ namespace AmazeCare.Migrations
                     b.Property<int>("PrescriptionId")
                         .HasColumnType("int");
 
-                    b.Property<string>("RecommendedTests")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("DetailId");
 
                     b.HasIndex("BeforeOrAfterFood");
@@ -291,29 +270,6 @@ namespace AmazeCare.Migrations
                     b.HasIndex("PrescriptionId");
 
                     b.ToTable("PrescriptionDetails");
-                });
-
-            modelBuilder.Entity("AmazeCare.Models.RecommendedTest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("MedicalRecordId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MedicalTestId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MedicalRecordId");
-
-                    b.HasIndex("MedicalTestId");
-
-                    b.ToTable("RecommendedTests");
                 });
 
             modelBuilder.Entity("AmazeCare.Models.Role", b =>
@@ -529,25 +485,6 @@ namespace AmazeCare.Migrations
                     b.Navigation("Prescription");
                 });
 
-            modelBuilder.Entity("AmazeCare.Models.RecommendedTest", b =>
-                {
-                    b.HasOne("AmazeCare.Models.MedicalRecord", "MedicalRecord")
-                        .WithMany("RecommendedTests")
-                        .HasForeignKey("MedicalRecordId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AmazeCare.Models.MedicalTest", "MedicalTest")
-                        .WithMany("RecommendedTests")
-                        .HasForeignKey("MedicalTestId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("MedicalRecord");
-
-                    b.Navigation("MedicalTest");
-                });
-
             modelBuilder.Entity("AmazeCare.Models.User", b =>
                 {
                     b.HasOne("AmazeCare.Models.Role", "Role")
@@ -567,16 +504,6 @@ namespace AmazeCare.Migrations
             modelBuilder.Entity("AmazeCare.Models.FoodTiming", b =>
                 {
                     b.Navigation("PrescriptionDetails");
-                });
-
-            modelBuilder.Entity("AmazeCare.Models.MedicalRecord", b =>
-                {
-                    b.Navigation("RecommendedTests");
-                });
-
-            modelBuilder.Entity("AmazeCare.Models.MedicalTest", b =>
-                {
-                    b.Navigation("RecommendedTests");
                 });
 
             modelBuilder.Entity("AmazeCare.Models.Medicine", b =>

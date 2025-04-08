@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using AmazeCare.Misc;
 using AmazeCare.Interfaces;
+using AmazeCare.Service;
 
 namespace AmazeCare
 {
@@ -83,12 +84,18 @@ namespace AmazeCare
             builder.Services.AddScoped<IPatientUpdateService, PatientUpdateService>();
             builder.Services.AddScoped<IPatientService, PatientService>();
             builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+            builder.Services.AddScoped<IDoctorService, DoctorService>();
+            builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
+            builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
             #endregion
 
             #region Repository
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+            builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+            builder.Services.AddScoped<IMedicalRecordRepository, MedicalRecordRepository>();
+            builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
             #endregion
 
 

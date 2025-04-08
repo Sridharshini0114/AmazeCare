@@ -35,8 +35,6 @@ namespace AmazeCare.Repositories
 
       
 
-        
-
         public async Task<T> Update(K key, T entity)
         {
             var newEntity = await GetById(key);
