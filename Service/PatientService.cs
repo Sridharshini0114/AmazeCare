@@ -1,4 +1,5 @@
-﻿using AmazeCare.Interfaces;
+﻿using AmazeCare.Exceptions;
+using AmazeCare.Interfaces;
 using AmazeCare.Misc;
 using AmazeCare.Models;
 using AmazeCare.Models.DTOs;
@@ -14,18 +15,17 @@ namespace AmazeCare.Business
         private readonly IUserRepository _userRepository; // Interface instead of class
         private readonly IPatientRepository _patientRepository;
         private readonly TokenService _tokenService;
-        private readonly IDGeneratorService _idGenerator;
+   
 
         public PatientService(
             IUserRepository userRepository, // Inject interface here
             IPatientRepository patientRepository,
-            TokenService tokenService,
-            IDGeneratorService idGenerator)
+            TokenService tokenService)
         {
             _userRepository = userRepository;
             _patientRepository = patientRepository;
             _tokenService = tokenService;
-            _idGenerator = idGenerator;
+           
         }
 
 
@@ -35,13 +35,13 @@ namespace AmazeCare.Business
         {
             var existingUser = await _userRepository.GetUserByEmail(dto.Email);
             if (existingUser != null)
-                throw new Exception("Email already exists");
+                throw new EmailAlreadyExistsException("Email already exists");
 
             var role = await _userRepository.GetRoleByName("patient");
             if (role == null)
-                throw new Exception("Role 'patient' not found");
+                throw new RoleNotFoundException("Role 'patient' not found");
 
-            var generatedUserId = await _idGenerator.GenerateIDAsync('U');
+          
 
             var user = new User
             {
@@ -60,7 +60,7 @@ namespace AmazeCare.Business
 
             if (dto.RoleName.ToLower() == "patient")
             {
-                var generatedPatientId = await _idGenerator.GenerateIDAsync('P');
+          
                 var patient = new Patient
                 {
                     UserId = user.UserId,
@@ -101,7 +101,7 @@ namespace AmazeCare.Business
         {
             var user = await _userRepository.GetUserByEmailAndPassword(dto.Email, dto.Password);
             if (user == null)
-                throw new Exception("Invalid email or password");
+                throw new EmailAlreadyExistsException("Invalid email or password");
 
             var token = _tokenService.GenerateToken(user, user.Role!.RoleName);
 
@@ -129,7 +129,7 @@ namespace AmazeCare.Business
             var filtered = ApplyFilters(patients.ToList(), filters, sortBy);
 
             if (!filtered.Any())
-                throw new Exception("No patients found");
+                throw new PatientNotFoundException();
 
             return filtered;
         }
@@ -208,7 +208,7 @@ namespace AmazeCare.Business
             }
 
             if (!result.Any())
-                throw new Exception("No patients found matching the criteria.");
+                throw new PatientNotFoundException();
 
             return result;
         }

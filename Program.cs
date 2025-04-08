@@ -80,7 +80,7 @@ namespace AmazeCare
             #region Services
        
             builder.Services.AddScoped<TokenService>();
-            builder.Services.AddScoped<IDGeneratorService>();
+          
             builder.Services.AddScoped<IPatientUpdateService, PatientUpdateService>();
             builder.Services.AddScoped<IPatientService, PatientService>();
             builder.Services.AddScoped<IAppointmentService, AppointmentService>();
